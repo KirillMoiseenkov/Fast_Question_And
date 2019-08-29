@@ -14,14 +14,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.weibeld.example.R;
+import org.weibeld.example.tabs.MyCustomListener.Not;
+import org.weibeld.example.tabs.ServicesOrParsers.RestUtils;
 import org.weibeld.example.tabs.entity.Answer;
 
 import java.util.ArrayList;
 
 public class UniversalPage extends Fragment {
 
+
+    private RestUtils restUtils;
     public static Integer count = 1;
     private CustomViewPager customViewPager;
+    //private String url = "https://mp-vtb.opendev.com/api/services";
+    private String url = "http://192.168.1.77:8080/getAnswers";
+    private Not not;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -41,37 +48,38 @@ public class UniversalPage extends Fragment {
 
         final LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.layout);
 
-
+        not = new Not();
+        not.setLinearLayout(linearLayout);
+        restUtils = new RestUtils(getContext());
+        restUtils.setNot(not);
 
         button.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 customViewPager.setPagingEnabled(true);
-                textView.setText(editText.getText());
-
-                final TextView newAnswer = new TextView(getContext());
-
-                newAnswer.setText(editText.getText());
-                newAnswer.setTextSize(20);
-                newAnswer.setTextColor(85);
-                newAnswer.setGravity(textView.getGravity());
-                newAnswer.setPadding(100,50,50,10);
-                newAnswer.setTextColor(editText.getTextColors());
-
-                linearLayout.addView(newAnswer);
+//                textView.setText(editText.getText());
+//
+//                final TextView newAnswer = new TextView(getContext());
+//
+//                newAnswer.setText(getAllAnswers().toString());
+//                newAnswer.setTextSize(20);
+//                newAnswer.setTextColor(85);
+//                newAnswer.setGravity(textView.getGravity());
+//                newAnswer.setPadding(100, 50, 50, 10);
+//                newAnswer.setTextColor(editText.getTextColors());
+//
+//                linearLayout.addView(newAnswer);
+                  getAllAnswers();
             }
         });
 
 
-
         return rootView;
-
-
     }
 
 
-    private void getNewQuestion(final TextView textView){
+    private void getNewQuestion(final TextView textView) {
         textView.setText("WOW" + count++);
     }
 
@@ -86,11 +94,9 @@ public class UniversalPage extends Fragment {
 
     ArrayList<Answer> answers = new ArrayList<>();
 
-    public ArrayList<Answer> getAllAnswers(){
-        Answer answer = new Answer();
-        answer.setText(count.toString());
-        answers.add(answer);
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public ArrayList<Answer> getAllAnswers() {
+        restUtils.send(getContext(), url);
         return answers;
     }
 

@@ -26,7 +26,7 @@ public class AnswerPage extends Fragment {
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(i == 0){
+                if (i == 0) {
                     textView.setText(editText.getText());
                 }
                 return true;

@@ -3,6 +3,7 @@ package org.weibeld.example.tabs;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 
@@ -12,9 +13,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    String url = "https://mp-vtb.opendev.com/api/services";
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private final String[] PAGE_TITLES = new String[] {
+    private final String[] PAGE_TITLES = new String[]{
             "Page 1",
             "Page 2",
             "Page 3"
@@ -32,6 +34,21 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (CustomViewPager) findViewById(R.id.viewpager);
         mViewPager.setAdapter(new MyPagerAdapter(getFragmentManager()));
         mViewPager.setPagingEnabled(false);
+
+
+//        final Handler handler =new Handler();
+//        final int[] i = {0};
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                i[0]++;
+//                if(i[0]<5)
+//                handler.postDelayed(this,1000);
+//            }
+//        },1000);
+
+        //RestUtils restUtils = new RestUtils();
+        //restUtils.send(this,url);
     }
 
 
