@@ -1,9 +1,12 @@
 package org.weibeld.example.tabs;
 
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 
@@ -43,12 +46,14 @@ public class MainActivity extends AppCompatActivity {
             super(fragmentManager);
         }
 
+        @TargetApi(Build.VERSION_CODES.M)
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public Fragment getItem(int position) {
             UniversalPage question = new UniversalPage();
             question.setCustomViewPager(mViewPager);
             mViewPager.setPagingEnabled(false);
-            // question.setUpdateMode(false);
+            question.setUpdateMode(false);
             return question;
         }
 

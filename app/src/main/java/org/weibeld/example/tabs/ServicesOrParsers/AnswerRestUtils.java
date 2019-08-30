@@ -1,23 +1,17 @@
 package org.weibeld.example.tabs.ServicesOrParsers;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +21,6 @@ import org.weibeld.example.tabs.MyCustomListener.Not;
 import org.weibeld.example.tabs.entity.Answer;
 import org.weibeld.example.tabs.entity.Question;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,15 +80,15 @@ public class AnswerRestUtils {
         this.repeatSendingEnabledMode = repeatSendingEnabledMode;
     }
 
+    Handler handler = new Handler();
+
     public void repeatSending(Context context, String url, Question question, Integer time) {
-        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void run() {
-                //GET(context,url);
                 try {
-                    sendCheckArray(context, url, question);
+                    getAnswersByQuestion(context, url, question);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -108,7 +101,7 @@ public class AnswerRestUtils {
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void sendCheckArray(final Context context, String url, Question question) throws JSONException {
+    public void getAnswersByQuestion(final Context context, String url, Question question) throws JSONException {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", question.getId());

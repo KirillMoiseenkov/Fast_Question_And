@@ -28,13 +28,14 @@ public class UniversalPage extends Fragment {
     private AnswerRestUtils answerRestUtils;
     public static Integer count = 1;
     private CustomViewPager customViewPager;
-    //private String url = "https://mp-vtb.opendev.com/api/services";
     private String url = "http://192.168.0.192:8080/getAnswers";
     private String questionURL = "http://192.168.0.192:8080/getAllQuestion";
     private String getRandomAnswerURL = "http://192.168.0.192:8080/getRandomQuestion";
     private Not not;
     private QuestionRestUtils questionRestUtils;
     private TextView textView;
+    private Button button;
+    LinearLayout linearLayout;
 
     @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -54,9 +55,8 @@ public class UniversalPage extends Fragment {
 
         getNewQuestion(textView);
 
-        Button button = (Button) rootView.findViewById(R.id.send);
-
-        final LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.layout);
+        button = (Button) rootView.findViewById(R.id.send);
+        linearLayout = (LinearLayout) rootView.findViewById(R.id.layout);
 
         not = new Not();
         not.setLinearLayout(linearLayout);
@@ -64,9 +64,13 @@ public class UniversalPage extends Fragment {
         answerRestUtils.setNot(not);
 
 
+
+        Question question = new Question();
+        getQuestion(question);
+
         button.setOnClickListener(view -> {
             customViewPager.setPagingEnabled(true);
-            getAllAnswers();
+            getAllAnswers(question);
             linearLayout.removeView(button);
         });
 
@@ -102,14 +106,15 @@ public class UniversalPage extends Fragment {
 
     @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public ArrayList<Answer> getAllAnswers() {
+    public ArrayList<Answer> getAllAnswers(Question question) {
         url = "http://192.168.0.192:8080/getAnswerByQuestion";
-        Question question = new Question();
-        questionRestUtils.GET(getContext(), getRandomAnswerURL, textView, question);
-        answerRestUtils.setRepeatSendingEnabledMode(true);
+        answerRestUtils.setRepeatSendingEnabledMode(updateMode);
         answerRestUtils.repeatSending(getContext(), url, question, 5000);
         return answers;
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void getQuestion(Question question){
+        questionRestUtils.GET(getContext(), getRandomAnswerURL, textView, question);
+    }
 }
