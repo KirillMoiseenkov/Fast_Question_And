@@ -65,4 +65,17 @@ public class AnswerResponseParser {
         answerList = answersResponse;
         return answersResponse;
     }
+
+    public Answer parseAnswer(String response){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(response, Answer.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
 }

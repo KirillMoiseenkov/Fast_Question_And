@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             UniversalPage question = new UniversalPage();
             question.setCustomViewPager(mViewPager);
             mViewPager.setPagingEnabled(false);
-            question.setUpdateMode(false);
+            //question.setUpdateMode(false);
             return question;
         }
 

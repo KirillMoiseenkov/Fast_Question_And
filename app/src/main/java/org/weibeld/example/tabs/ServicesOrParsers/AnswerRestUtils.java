@@ -5,19 +5,25 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.weibeld.example.tabs.MainActivity;
 import org.weibeld.example.tabs.MyCustomListener.Not;
+import org.weibeld.example.tabs.MyCustonJsonRequestPareser.MyJsonObjectRequest;
 import org.weibeld.example.tabs.entity.Answer;
 import org.weibeld.example.tabs.entity.Question;
 
@@ -80,9 +86,10 @@ public class AnswerRestUtils {
         this.repeatSendingEnabledMode = repeatSendingEnabledMode;
     }
 
-    Handler handler = new Handler();
+
 
     public void repeatSending(Context context, String url, Question question, Integer time) {
+        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -132,4 +139,37 @@ public class AnswerRestUtils {
         queue.add(jsonobj);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void saveAnswerOnQuestion(final Context context, String url, Answer answer) throws JSONException {
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("text", answer.getText());
+        String jso ="[]";
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            jso = objectMapper.writeValueAsString(answer);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        jsonObject = new JSONObject(jso);
+
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(jsonObject);
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest jsonobj = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                response -> {
+                      Answer answer2 = answerResponseParser.parseAnswer(response.toString());
+                      answer.setText(answer2.getText());
+                      answer.setId(answer2.getId());
+                      answer.setQuestion(answer2.getQuestion());
+                      },
+                error -> {
+                    String a = error.getMessage();
+                }
+        );
+
+        queue.add(jsonobj);
+    }
 }

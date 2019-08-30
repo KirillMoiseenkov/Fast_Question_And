@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONException;
 import org.weibeld.example.R;
 import org.weibeld.example.tabs.MyCustomListener.Not;
 import org.weibeld.example.tabs.ServicesOrParsers.AnswerRestUtils;
@@ -35,7 +36,8 @@ public class UniversalPage extends Fragment {
     private QuestionRestUtils questionRestUtils;
     private TextView textView;
     private Button button;
-    LinearLayout linearLayout;
+    private LinearLayout linearLayout;
+    private EditText editText;
 
     @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -49,11 +51,9 @@ public class UniversalPage extends Fragment {
 
         questionRestUtils.GET(getContext(), questionURL, textView, null);
 
-        final EditText editText = (EditText) rootView.findViewById(R.id.enterInput);
+        editText = (EditText) rootView.findViewById(R.id.enterInput);
 
         textView.setTextColor(editText.getTextColors());
-
-        getNewQuestion(textView);
 
         button = (Button) rootView.findViewById(R.id.send);
         linearLayout = (LinearLayout) rootView.findViewById(R.id.layout);
@@ -70,17 +70,13 @@ public class UniversalPage extends Fragment {
 
         button.setOnClickListener(view -> {
             customViewPager.setPagingEnabled(true);
+            saveAnswer(question);
             getAllAnswers(question);
             linearLayout.removeView(button);
         });
 
 
         return rootView;
-    }
-
-
-    private void getNewQuestion(final TextView textView) {
-        textView.setText("WOW" + count++);
     }
 
 
@@ -107,9 +103,9 @@ public class UniversalPage extends Fragment {
     @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(api = Build.VERSION_CODES.M)
     public ArrayList<Answer> getAllAnswers(Question question) {
-        url = "http://192.168.0.192:8080/getAnswerByQuestion";
-        answerRestUtils.setRepeatSendingEnabledMode(updateMode);
-        answerRestUtils.repeatSending(getContext(), url, question, 5000);
+            url = "http://192.168.0.192:8080/getAnswerByQuestion";
+            answerRestUtils.setRepeatSendingEnabledMode(updateMode);
+            answerRestUtils.repeatSending(getContext(), url, question, 1000);
         return answers;
     }
 
@@ -117,4 +113,20 @@ public class UniversalPage extends Fragment {
     public void getQuestion(Question question){
         questionRestUtils.GET(getContext(), getRandomAnswerURL, textView, question);
     }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void saveAnswer(Question question){
+        url = "http://192.168.0.192:8080/saveAnswer";
+        Answer answer = new Answer();
+        answer.setText(editText.getText().toString());
+        answer.setQuestion(question);
+
+        try {
+            answerRestUtils.saveAnswerOnQuestion(getContext(),url,answer);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
