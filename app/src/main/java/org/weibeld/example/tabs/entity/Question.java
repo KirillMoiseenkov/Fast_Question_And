@@ -3,13 +3,20 @@ package org.weibeld.example.tabs.entity;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Question {
 
+    @JsonProperty("id")
     private Integer id;
+
+    @JsonProperty("text")
     private String text;
+
+    @JsonProperty("answers")
     private ArrayList<Answer> answers;
 
     public Integer getId() {
@@ -50,5 +57,13 @@ public class Question {
     @Override
     public int hashCode() {
         return Objects.hash(id, text, answers);
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                '}';
     }
 }

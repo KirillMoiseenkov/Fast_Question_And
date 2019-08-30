@@ -34,21 +34,6 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (CustomViewPager) findViewById(R.id.viewpager);
         mViewPager.setAdapter(new MyPagerAdapter(getFragmentManager()));
         mViewPager.setPagingEnabled(false);
-
-
-//        final Handler handler =new Handler();
-//        final int[] i = {0};
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                i[0]++;
-//                if(i[0]<5)
-//                handler.postDelayed(this,1000);
-//            }
-//        },1000);
-
-        //RestUtils restUtils = new RestUtils();
-        //restUtils.send(this,url);
     }
 
 
@@ -63,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
             UniversalPage question = new UniversalPage();
             question.setCustomViewPager(mViewPager);
             mViewPager.setPagingEnabled(false);
+            // question.setUpdateMode(false);
             return question;
-
         }
 
         @Override

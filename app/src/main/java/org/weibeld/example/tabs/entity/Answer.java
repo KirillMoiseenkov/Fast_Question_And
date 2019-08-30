@@ -11,8 +11,9 @@ import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "firstname",
-        "lastname"
+        "id",
+        "text",
+        "question"
 })
 public class Answer {
 
@@ -22,6 +23,7 @@ public class Answer {
     @JsonProperty("text")
     private String text;
 
+    @JsonProperty("question")
     private Question question;
 
     public Integer getId() {
@@ -61,5 +63,14 @@ public class Answer {
     @Override
     public int hashCode() {
         return Objects.hash(id, text, question);
+    }
+
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", question=" + question +
+                '}';
     }
 }

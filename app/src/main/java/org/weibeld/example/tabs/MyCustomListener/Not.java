@@ -9,8 +9,7 @@ public class Not implements Notificater {
     LinearLayout linearLayout;
 
     @Override
-    public void addData()
-    {
+    public void addData() {
         linearLayout.addView(textView);
     }
 

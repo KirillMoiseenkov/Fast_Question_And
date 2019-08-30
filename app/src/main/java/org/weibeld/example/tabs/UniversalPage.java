@@ -1,6 +1,6 @@
 package org.weibeld.example.tabs;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,28 +15,38 @@ import android.widget.TextView;
 
 import org.weibeld.example.R;
 import org.weibeld.example.tabs.MyCustomListener.Not;
-import org.weibeld.example.tabs.ServicesOrParsers.RestUtils;
+import org.weibeld.example.tabs.ServicesOrParsers.AnswerRestUtils;
+import org.weibeld.example.tabs.ServicesOrParsers.QuestionRestUtils;
 import org.weibeld.example.tabs.entity.Answer;
+import org.weibeld.example.tabs.entity.Question;
 
 import java.util.ArrayList;
 
 public class UniversalPage extends Fragment {
 
 
-    private RestUtils restUtils;
+    private AnswerRestUtils answerRestUtils;
     public static Integer count = 1;
     private CustomViewPager customViewPager;
     //private String url = "https://mp-vtb.opendev.com/api/services";
-    private String url = "http://192.168.1.77:8080/getAnswers";
+    private String url = "http://192.168.0.192:8080/getAnswers";
+    private String questionURL = "http://192.168.0.192:8080/getAllQuestion";
+    private String getRandomAnswerURL = "http://192.168.0.192:8080/getRandomQuestion";
     private Not not;
+    private QuestionRestUtils questionRestUtils;
+    private TextView textView;
 
+    @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_page1, container, false);
 
-        final TextView textView = (TextView) rootView.findViewById(R.id.question);
+        textView = (TextView) rootView.findViewById(R.id.question);
 
+        questionRestUtils = new QuestionRestUtils();
+
+        questionRestUtils.GET(getContext(), questionURL, textView, null);
 
         final EditText editText = (EditText) rootView.findViewById(R.id.enterInput);
 
@@ -50,28 +60,14 @@ public class UniversalPage extends Fragment {
 
         not = new Not();
         not.setLinearLayout(linearLayout);
-        restUtils = new RestUtils(getContext());
-        restUtils.setNot(not);
+        answerRestUtils = new AnswerRestUtils(getContext());
+        answerRestUtils.setNot(not);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View view) {
-                customViewPager.setPagingEnabled(true);
-//                textView.setText(editText.getText());
-//
-//                final TextView newAnswer = new TextView(getContext());
-//
-//                newAnswer.setText(getAllAnswers().toString());
-//                newAnswer.setTextSize(20);
-//                newAnswer.setTextColor(85);
-//                newAnswer.setGravity(textView.getGravity());
-//                newAnswer.setPadding(100, 50, 50, 10);
-//                newAnswer.setTextColor(editText.getTextColors());
-//
-//                linearLayout.addView(newAnswer);
-                  getAllAnswers();
-            }
+
+        button.setOnClickListener(view -> {
+            customViewPager.setPagingEnabled(true);
+            getAllAnswers();
+            linearLayout.removeView(button);
         });
 
 
@@ -94,10 +90,26 @@ public class UniversalPage extends Fragment {
 
     ArrayList<Answer> answers = new ArrayList<>();
 
+    boolean updateMode = true;
+
+    public boolean isUpdateMode() {
+        return updateMode;
+    }
+
+    public void setUpdateMode(boolean updateMode) {
+        this.updateMode = updateMode;
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(api = Build.VERSION_CODES.M)
     public ArrayList<Answer> getAllAnswers() {
-        restUtils.send(getContext(), url);
+        url = "http://192.168.0.192:8080/getAnswerByQuestion";
+        Question question = new Question();
+        questionRestUtils.GET(getContext(), getRandomAnswerURL, textView, question);
+        answerRestUtils.setRepeatSendingEnabledMode(true);
+        answerRestUtils.repeatSending(getContext(), url, question, 5000);
         return answers;
     }
+
 
 }

@@ -8,11 +8,11 @@ public class TextViewBuilder {
 
     private Context context;
 
-    public TextViewBuilder(Context context){
+    public TextViewBuilder(Context context) {
         this.context = context;
     }
 
-    public TextView buildStandartTextView(String text){
+    public TextView buildStandartTextView(String text) {
         TextView textView = new TextView(context);
         textView.setTextSize(20);
         textView.setTextColor(Color.parseColor("#F0F6EE"));

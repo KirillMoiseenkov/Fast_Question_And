@@ -22,7 +22,7 @@ public class AnswerResponseParser {
 
     private List<Answer> answerList;
 
-    public AnswerResponseParser(){
+    public AnswerResponseParser() {
         answerList = new ArrayList<>();
     }
 
@@ -30,7 +30,8 @@ public class AnswerResponseParser {
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.readValue(response,new TypeReference<List<Answer>>(){});
+            return objectMapper.readValue(response, new TypeReference<List<Answer>>() {
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,7 +40,7 @@ public class AnswerResponseParser {
     }
 
     private List<Answer> parseJSONArrayToListAnswer(String response) throws JSONException {
-       return parseAnswerResponseToJSONArray(response);
+        return parseAnswerResponseToJSONArray(response);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -52,8 +53,8 @@ public class AnswerResponseParser {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private List<Answer> checkOnDuplicate(List<Answer> answersResponse){
-        if(Objects.nonNull(answersResponse) && Objects.nonNull(answerList) && !answerList.isEmpty()) {
+    private List<Answer> checkOnDuplicate(List<Answer> answersResponse) {
+        if (Objects.nonNull(answersResponse) && Objects.nonNull(answerList) && !answerList.isEmpty()) {
             Set<Answer> localAnswers = new HashSet<>(answerList);
             Set<Answer> answerSetResponse = new HashSet<>(answersResponse);
 
