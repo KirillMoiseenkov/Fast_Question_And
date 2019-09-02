@@ -5,12 +5,13 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 
 import org.weibeld.example.R;
+import org.weibeld.example.tabs.pages.AnswerQuestion;
+import org.weibeld.example.tabs.pages.UniversalPage;
 
 import java.util.ArrayList;
 
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setPagingEnabled(false);
     }
 
+    private Integer countAnswer = 0;
 
     public class MyPagerAdapter extends FragmentPagerAdapter {
 
@@ -46,15 +48,31 @@ public class MainActivity extends AppCompatActivity {
             super(fragmentManager);
         }
 
+        private UniversalPage previusPage;
+        private UniversalPage newPage = new UniversalPage();
+
         @TargetApi(Build.VERSION_CODES.M)
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public Fragment getItem(int position) {
-            UniversalPage question = new UniversalPage();
-            question.setCustomViewPager(mViewPager);
-            mViewPager.setPagingEnabled(false);
-            //question.setUpdateMode(false);
-            return question;
+
+            previusPage = newPage;
+            previusPage.setUpdateMode(true);
+
+            if(countAnswer < 3) {
+
+                newPage = new UniversalPage();
+                newPage.setCustomViewPager(mViewPager);
+                mViewPager.setPagingEnabled(false);
+                newPage.setUpdateMode(true);
+                countAnswer++;
+                //question.setUpdateMode(false);
+            }else {
+                newPage = new AnswerQuestion();
+                newPage.setCustomViewPager(mViewPager);
+                countAnswer = 0;
+            }
+            return newPage;
         }
 
         @Override

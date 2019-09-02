@@ -1,20 +1,25 @@
-package org.weibeld.example.tabs;
+package org.weibeld.example.tabs.pages;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
 import org.weibeld.example.R;
+import org.weibeld.example.tabs.CustomViewPager;
 import org.weibeld.example.tabs.MyCustomListener.Not;
 import org.weibeld.example.tabs.ServicesOrParsers.AnswerRestUtils;
 import org.weibeld.example.tabs.ServicesOrParsers.QuestionRestUtils;
@@ -22,22 +27,25 @@ import org.weibeld.example.tabs.entity.Answer;
 import org.weibeld.example.tabs.entity.Question;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class UniversalPage extends Fragment {
 
+    protected String urlBegin = "http://192.168.0.192:8080";
 
-    private AnswerRestUtils answerRestUtils;
+    protected AnswerRestUtils answerRestUtils;
     public static Integer count = 1;
-    private CustomViewPager customViewPager;
-    private String url = "http://192.168.0.192:8080/getAnswers";
-    private String questionURL = "http://192.168.0.192:8080/getAllQuestion";
-    private String getRandomAnswerURL = "http://192.168.0.192:8080/getRandomQuestion";
-    private Not not;
-    private QuestionRestUtils questionRestUtils;
-    private TextView textView;
-    private Button button;
-    private LinearLayout linearLayout;
-    private EditText editText;
+    protected CustomViewPager customViewPager;
+    protected String url = urlBegin + "/getAnswers";
+    protected String questionURL = urlBegin + "/getAllQuestion";
+    protected String getRandomAnswerURL = urlBegin + "/getRandomQuestion";
+    protected String getAnswerByQuestion = urlBegin + "/getAnswerByQuestion";
+    protected Not not;
+    protected QuestionRestUtils questionRestUtils;
+    protected TextView textView;
+    protected Button button;
+    protected LinearLayout linearLayout;
+    protected EditText editText;
 
     @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -68,11 +76,20 @@ public class UniversalPage extends Fragment {
         Question question = new Question();
         getQuestion(question);
 
+        if(Objects.nonNull(question) && question.getText()!=null && !question.getText().isEmpty()){
+            textView.setText(question.getText());
+        }
+
         button.setOnClickListener(view -> {
             customViewPager.setPagingEnabled(true);
-            saveAnswer(question);
-            getAllAnswers(question);
-            linearLayout.removeView(button);
+            if(Objects.nonNull(question) && question.getText()!=null && !editText.getText().toString().isEmpty()
+            && editText.getText().toString().length() > 5){
+                textView.setText(question.getText());
+                saveAnswer(question);
+                getAllAnswers(question);
+                linearLayout.removeView(button);
+            }
+
         });
 
 
@@ -103,7 +120,7 @@ public class UniversalPage extends Fragment {
     @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(api = Build.VERSION_CODES.M)
     public ArrayList<Answer> getAllAnswers(Question question) {
-            url = "http://192.168.0.192:8080/getAnswerByQuestion";
+            url = urlBegin + "/getAnswerByQuestion";
             answerRestUtils.setRepeatSendingEnabledMode(updateMode);
             answerRestUtils.repeatSending(getContext(), url, question, 1000);
         return answers;
@@ -112,12 +129,15 @@ public class UniversalPage extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void getQuestion(Question question){
         questionRestUtils.GET(getContext(), getRandomAnswerURL, textView, question);
+        if(Objects.nonNull(question) && question.getText()!=null && !question.getText().isEmpty()){
+            textView.setText(question.getText());
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void saveAnswer(Question question){
-        url = "http://192.168.0.192:8080/saveAnswer";
+        url = urlBegin + "/saveAnswer";
         Answer answer = new Answer();
         answer.setText(editText.getText().toString());
         answer.setQuestion(question);
@@ -128,5 +148,4 @@ public class UniversalPage extends Fragment {
             e.printStackTrace();
         }
     }
-
 }

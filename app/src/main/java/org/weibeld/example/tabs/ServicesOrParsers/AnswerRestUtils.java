@@ -160,10 +160,10 @@ public class AnswerRestUtils {
         RequestQueue queue = Volley.newRequestQueue(context);
         JsonObjectRequest jsonobj = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 response -> {
-                      Answer answer2 = answerResponseParser.parseAnswer(response.toString());
-                      answer.setText(answer2.getText());
-                      answer.setId(answer2.getId());
-                      answer.setQuestion(answer2.getQuestion());
+                      Answer responseAnswer = answerResponseParser.parseAnswer(response.toString());
+                      answer.setText(responseAnswer.getText());
+                      answer.setId(responseAnswer.getId());
+                      answer.setQuestion(responseAnswer.getQuestion());
                       },
                 error -> {
                     String a = error.getMessage();

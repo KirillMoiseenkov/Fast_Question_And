@@ -19,6 +19,7 @@ public class TextViewBuilder {
         textView.setPadding(100, 50, 50, 10);
         textView.setGravity(8388659);
         textView.setText(text);
+
         return textView;
     }
 
