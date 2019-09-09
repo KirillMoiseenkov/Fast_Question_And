@@ -2,10 +2,13 @@ package org.weibeld.example.tabs.pages;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,9 +32,11 @@ import org.weibeld.example.tabs.entity.Question;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class UniversalPage extends Fragment {
+import static android.app.Activity.RESULT_OK;
 
+public class UniversalPage extends Fragment {
     protected String urlBegin = "http://192.168.0.192:8080";
+   // protected String urlBegin = "http://192.168.1.77:8080";
 
     protected AnswerRestUtils answerRestUtils;
     public static Integer count = 1;
@@ -46,6 +51,9 @@ public class UniversalPage extends Fragment {
     protected Button button;
     protected LinearLayout linearLayout;
     protected EditText editText;
+    //private ImageView imageView;
+    private LinearLayout forPick;
+    private Context context;
 
     @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -71,7 +79,8 @@ public class UniversalPage extends Fragment {
         answerRestUtils = new AnswerRestUtils(getContext());
         answerRestUtils.setNot(not);
 
-
+        //imageView = new ImageView(getContext());
+        //imageView.setImageResource(R.drawable.anasty);
 
         Question question = new Question();
         getQuestion(question);
@@ -88,10 +97,15 @@ public class UniversalPage extends Fragment {
                 saveAnswer(question);
                 getAllAnswers(question);
                 linearLayout.removeView(button);
-            }
-
+            }else
+            galleryAc();
         });
 
+
+
+        forPick = (LinearLayout) rootView.findViewById(R.id.for_picture);
+
+        context = getContext();
 
         return rootView;
     }
@@ -146,6 +160,29 @@ public class UniversalPage extends Fragment {
             answerRestUtils.saveAnswerOnQuestion(getContext(),url,answer);
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+
+    private void galleryAc(){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(intent,100);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == 100)
+        {
+
+            ImageView imageView = new ImageView(context);
+
+            Uri uri = data.getData();
+            imageView.setImageURI(uri);
+
+            imageView.setScaleType(ImageView.ScaleType.CENTER);
+
+            forPick.addView(imageView,550,550);
         }
     }
 }

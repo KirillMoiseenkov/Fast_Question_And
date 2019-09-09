@@ -1,13 +1,22 @@
 package org.weibeld.example.tabs;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import org.weibeld.example.R;
 import org.weibeld.example.tabs.pages.AnswerQuestion;
@@ -17,7 +26,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    String url = "https://mp-vtb.opendev.com/api/services";
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private final String[] PAGE_TITLES = new String[]{
@@ -29,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private final ArrayList<Fragment> pages = new ArrayList<Fragment>();
 
     private CustomViewPager mViewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
